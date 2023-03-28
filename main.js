@@ -62,12 +62,18 @@ client.on(Events.MessageCreate, async (msg) => {
         return;
     }
     if (taskFlag[msg.channel.id]) await taskFlag[msg.channel.id];
+
+    let idInterval = setInterval(() => {
+        msg.channel.sendTyping();
+    }, 1000);
+    
     let done;
     taskFlag[msg.channel.id] = new Promise(ok => {
-        done = ok;
+        done = () => {
+            clearInterval(idInterval);
+            ok();
+        };
     });
-
-    await msg.channel.sendTyping();
     await msg.fetch();
 
     let content = msg.content;
@@ -104,24 +110,18 @@ client.on(Events.MessageCreate, async (msg) => {
                         }
                     }
                 }
-                await msg.channel.sendTyping();
             }
 
             // build ChatGPT conversations
             var chatMessages = msgs.reduceRight((chat, msg) => (chat.push({role: msg.author.bot ? "system" : "user", content: msg.content}), chat),[]);
             console.log("ChatGPT context:", chatMessages);
-            await msg.channel.sendTyping();
 
             // ChatGPT
-            let idInterval = setInterval(() => {
-                msg.channel.sendTyping();
-            }, 1000);
             const completion = await openai.createChatCompletion({
                 model: "gpt-3.5-turbo",
                 messages: chatMessages
 
             });
-            clearInterval(idInterval);
             if (completion && completion?.status == 200 && completion?.data?.choices?.length > 0 && completion?.data?.choices[0]?.message ) {
                 await msg.reply(completion?.data?.choices[0]?.message);
             } else {
@@ -129,7 +129,7 @@ client.on(Events.MessageCreate, async (msg) => {
             }
         } catch (error) {
             console.error(error);
-            await msg.reply(`& Có lỗi nào đó đã sảy ra, xin lỗi vì sự bất tiện này!! @@!`);
+            await msg.reply(`& Có lỗi nào đó đã sảy ra, xin lỗi vì sự bất tiện này!! @@!\nP/s: *Đôi khi, lỗi sảy ra là do đoạn chat bị quá tải, hãy sử dụng lệnh \`&new\` để tạo đoạn chat mới và thử lại.*`);
         }
     }
     done();
