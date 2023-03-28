@@ -104,12 +104,13 @@ client.on(Events.MessageCreate, async (msg) => {
                         }
                     }
                 }
+                await msg.channel.sendTyping();
             }
 
             // build ChatGPT conversations
             var chatMessages = msgs.reduceRight((chat, msg) => (chat.push({role: msg.author.bot ? "system" : "user", content: msg.content}), chat),[]);
             console.log("ChatGPT context:", chatMessages);
-            
+            await msg.channel.sendTyping();
 
             // ChatGPT
             const completion = await openai.createChatCompletion({
