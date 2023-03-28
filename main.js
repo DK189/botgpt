@@ -113,11 +113,15 @@ client.on(Events.MessageCreate, async (msg) => {
             await msg.channel.sendTyping();
 
             // ChatGPT
+            let idInterval = setInterval(() => {
+                msg.channel.sendTyping();
+            }, 1000);
             const completion = await openai.createChatCompletion({
                 model: "gpt-3.5-turbo",
                 messages: chatMessages
 
             });
+            clearInterval(idInterval);
             if (completion && completion?.status == 200 && completion?.data?.choices?.length > 0 && completion?.data?.choices[0]?.message ) {
                 await msg.reply(completion?.data?.choices[0]?.message);
             } else {
