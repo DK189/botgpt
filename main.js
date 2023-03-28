@@ -66,9 +66,9 @@ client.on(Events.MessageCreate, async (msg) => {
     }
     if (taskFlag[msg.channel.id]) await taskFlag[msg.channel.id];
 
-    let idInterval = setInterval(() => {
+    var idInterval = setInterval(() => {
         msg.channel.sendTyping();
-    }, 1000);
+    }, 3000);
     
     let done;
     taskFlag[msg.channel.id] = new Promise(ok => {
