@@ -10,6 +10,9 @@ const {
     Events,
     REST,
     Routes,
+    DMChannel,
+    TextChannel,
+    ChannelType,
 } = require("discord.js");
 
 const {
@@ -54,7 +57,7 @@ var taskFlag = {};
 
 client.on(Events.MessageCreate, async (msg) => {
     if (msg.author.bot) return;
-    if (msg?.channel?.name?.toLowerCase() != "botgpt") {
+    if (msg?.channel?.name?.toLowerCase() != "botgpt" && ChannelType.DM != msg?.channel?.type) {
         await msg.fetch();
         if (msg.content.toLowerCase() == "&new") {
             msg.reply(`Vui lòng tạo kênh có tên là \`botgpt\`, tôi sẽ trò chuyện cùng mọi người trong đó!`);
