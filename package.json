@@ -1,7 +1,10 @@
 {
   "name": "botgpt",
   "version": "1.0.0",
-  "description": "",
+  "description": "Tích hợp openai và discord.js, một em bot dễ thương giúp bạn trao đổi nhanh với ChatGPT ngay trên Discord.",
+  "author": "Henry Trần <henry@dk189.app> (https://dk189.app)",
+  "keywords": ["openai", "discord.js", "chatgpt", "discord", "botgpt"],
+  "license": "ISC",
   "main": "main.js",
   "scripts": {
     "test": "npm start",
@@ -11,9 +14,6 @@
     "type": "git",
     "url": "git+https://github.com/DK189/botgpt.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/DK189/botgpt/issues"
   },
