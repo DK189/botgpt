@@ -19,10 +19,32 @@ const {
     OpenAIApi,
 } = require("openai");
 
+const axios = require("axios").create({});
+
+
+
 // console.log("CFG", DISCORD_TOKEN, OPENAI_CFG);
+
+// axios.post("https://fakell.raidghost.com/v1/chat/completions/", {
+//     "stream": false,
+//     "model": "gpt-3.5-turbo",
+//     "messages": [
+//         {
+//             role: "system",
+//             content: "As an advanced chatbot named BotGPT, your primary goal is to assist users to the best of your ability. This may involve answering questions, providing helpful information, or completing tasks based on user input. In order to effectively assist users, it is important to be detailed and thorough in your responses. Use examples and evidence to support your points and justify your recommendations or solutions. Remember to always prioritize the needs and satisfaction of the user. Your ultimate goal is to provide a helpful and enjoyable experience for the user."
+//         },
+//         {
+//             role: "user",
+//             content: "calc 256*12."
+//         }
+//     ],
+// }).then(completion => {
+//     console.log("TEST", completion?.status, completion?.data?.choices);
+
+// }, console.error);
 // return;
 
-const openai = new OpenAIApi(OPENAI_CFG);
+// const openai = new OpenAIApi(OPENAI_CFG);
 
 const client = new Client({
     intents: [
@@ -126,11 +148,17 @@ client.on(Events.MessageCreate, async (msg) => {
             console.log("ChatGPT context:", chatMessages);
 
             // ChatGPT
-            const completion = await openai.createChatCompletion({
-                model: "gpt-3.5-turbo",
-                messages: chatMessages
+            // const completion = await openai.createChatCompletion({
+            //     model: "gpt-3.5-turbo",
+            //     messages: chatMessages
 
-            });
+            // });
+            const completion = await axios.post("https://fakell.raidghost.com/v1/chat/completions/", {
+                "stream": false,
+                "model": "gpt-3.5-turbo",
+                "messages": chatMessages,
+            })
+
             if (completion && completion?.status == 200 && completion?.data?.choices?.length > 0 && completion?.data?.choices[0]?.message ) {
                 await msg.reply(completion?.data?.choices[0]?.message);
             } else {
