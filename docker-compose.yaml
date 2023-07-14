@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  botgpt:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - DISCORD_BOT_TOKEN=abc
+      - OPENAI_API_KEY=xyz
+    
