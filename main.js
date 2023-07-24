@@ -148,16 +148,16 @@ client.on(Events.MessageCreate, async (msg) => {
             console.log("ChatGPT context:", chatMessages);
 
             // ChatGPT
-            // const completion = await openai.createChatCompletion({
-            //     model: "gpt-3.5-turbo",
-            //     messages: chatMessages
+            const completion = await openai.createChatCompletion({
+                model: "gpt-3.5-turbo",
+                messages: chatMessages
 
-            // });
-            const completion = await axios.post("https://fakell.raidghost.com/v1/chat/completions/", {
-                "stream": false,
-                "model": "gpt-3.5-turbo",
-                "messages": chatMessages,
-            })
+            });
+            // const completion = await axios.post("https://fakell.raidghost.com/v1/chat/completions/", {
+            //     "stream": false,
+            //     "model": "gpt-3.5-turbo",
+            //     "messages": chatMessages,
+            // })
 
             if (completion && completion?.status == 200 && completion?.data?.choices?.length > 0 && completion?.data?.choices[0]?.message ) {
                 await msg.reply(completion?.data?.choices[0]?.message);

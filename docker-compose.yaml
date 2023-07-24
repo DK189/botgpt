@@ -8,4 +8,5 @@ services:
     environment:
       - DISCORD_BOT_TOKEN=abc
       - OPENAI_API_KEY=xyz
+      - OPENAI_API_BASE=https://api.chatanywhere.cn/v1
     

@@ -7,6 +7,7 @@ const {
 module.exports = {
     DISCORD_TOKEN: process.env.DISCORD_BOT_TOKEN,
     OPENAI_CFG: new Configuration({
+        basePath: process.env.OPENAI_API_BASE,
         apiKey: process.env.OPENAI_API_KEY,
     })
 };
