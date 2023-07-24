@@ -44,7 +44,7 @@ const axios = require("axios").create({});
 // }, console.error);
 // return;
 
-// const openai = new OpenAIApi(OPENAI_CFG);
+const openai = new OpenAIApi(OPENAI_CFG);
 
 const client = new Client({
     intents: [
