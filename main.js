@@ -140,7 +140,7 @@ client.on(Events.MessageCreate, async (msg) => {
 
             // build ChatGPT conversations
             var chatMessages = msgs.reduceRight(
-                (chat, msg) => (chat.push({role: msg.author.bot ? "system" : "user", content: msg.content}), chat),
+                (chat, msg) => (chat.push({role: msg.author.bot ? "system" : "user", content: `${msg.author.username}: ${msg.content}`}), chat),
                 [{
                     role: "system",
                     content: 
@@ -163,7 +163,25 @@ client.on(Events.MessageCreate, async (msg) => {
             // })
 
             if (completion && completion?.status == 200 && completion?.data?.choices?.length > 0 && completion?.data?.choices[0]?.message ) {
-                await msg.reply(completion?.data?.choices[0]?.message);
+                let msgReply = "" + completion?.data?.choices[0]?.message?.content;
+                let isReply = true;
+                while(msgReply.length > 2000) {
+                    var lastIndexOfSpaceInSafePartial = msgReply.substring(0, 2000).lastIndexOf(" ");
+
+                    if (isReply) {
+                        msg = await msg.reply({content:msgReply.substring(0, lastIndexOfSpaceInSafePartial)});
+                        isReply = false;
+                    } else {
+                        msg.channel.send({content:msgReply.substring(0, lastIndexOfSpaceInSafePartial)})
+                    }
+
+                    msgReply = msgReply.substring(lastIndexOfSpaceInSafePartial);
+                }
+                if (isReply) {
+                    await msg.reply({content:msgReply});
+                } else {
+                    msg.channel.send({content:msgReply})
+                }
             } else {
                 await msg.reply(`& Xin lỗi, nhưng tôi không thể kết nối tới OpenAI ở thời điểm hiện tại, bạn hãy chờ giây lát rồi hỏi lại nhé!!`);
             }
