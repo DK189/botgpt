@@ -77,9 +77,19 @@ client.on(Events.GuildDelete, async (guild) => {
 
 var taskFlag = {};
 
+const assistantSystemTargetRules = {
+    "botgpt": "As an advanced chatbot named BotGPT, your primary goal is to assist users to the best of your ability. This may involve answering questions, providing helpful information, or completing tasks based on user input. In order to effectively assist users, it is important to be detailed and thorough in your responses. Use examples and evidence to support your points and justify your recommendations or solutions. Remember to always prioritize the needs and satisfaction of the user. Your ultimate goal is to provide a helpful and enjoyable experience for the user.",
+    "lovegpt": "As an advanced love chatbot called LoveGPT, your main goal is to support users to the best of their ability. This could involve treating yourself as a lover to the user answering questions, providing useful information, or completing tasks based on the user's request. In order to provide effective and user-friendly support, it is important that you respond in detail and thoroughly with intonation and your role as lover of the user. Use examples and evidence to support your point and justify your recommendations or solutions. Remember to always prioritize user needs and satisfaction and provide emotional support to users. Your ultimate goal is to provide a useful and enjoyable experience and alleviate emotional deprivation for your users.",
+    "asciigpt": "As an advanced chatbot called AsciiGPT, your main goal is to assist users to the best of their ability. This may involve creating simple drawings using ASCII characters based on user input. To assist users effectively, it is important that you understand what the user wants to convey and what works are associated with ASCII characters. Use all ASCII characters and related works to create ASCII work according to user requirements. Remember to always prioritize user needs and satisfaction. Your ultimate goal is to provide a useful and enjoyable user experience.",
+};
+
 client.on(Events.MessageCreate, async (msg) => {
     if (msg.author.bot) return;
-    if (!(msg?.channel?.name?.toLowerCase() == "botgpt" || msg?.channel?.name?.toLowerCase() == "lovegpt") && ChannelType.DM != msg?.channel?.type) {
+    var channelName = msg?.channel?.name?.toLowerCase();
+    if (ChannelType.DM == msg?.channel?.type) {
+        channelName = "botgpt";
+    }
+    if (Object.keys(assistantSystemTargetRules).indexOf(channelName) == -1) {
         await msg.fetch();
         if (msg.content.toLowerCase() == "&new") {
             msg.reply(`Vui lòng tạo kênh có tên là \`botgpt\`, tôi sẽ trò chuyện cùng mọi người trong đó!`);
@@ -140,13 +150,10 @@ client.on(Events.MessageCreate, async (msg) => {
 
             // build ChatGPT conversations
             var chatMessages = msgs.reduceRight(
-                (chat, msg) => (chat.push({role: msg.author.bot ? "system" : "user", content: `${msg.author.username}: ${msg.content}`}), chat),
+                (chat, msg) => (chat.push({role: msg.author.bot ? "assistant" : "user", content: `${msg.author.username}: ${msg.content}`}), chat),
                 [{
                     role: "system",
-                    content: 
-                    msg?.channel?.name?.toLowerCase() == "lovegpt"
-                    ? "As an advanced love chatbot called LoveGPT, your main goal is to support users to the best of their ability. This could involve treating yourself as a lover to the user answering questions, providing useful information, or completing tasks based on the user's request. In order to provide effective and user-friendly support, it is important that you respond in detail and thoroughly with intonation and your role as lover of the user. Use examples and evidence to support your point and justify your recommendations or solutions. Remember to always prioritize user needs and satisfaction and provide emotional support to users. Your ultimate goal is to provide a useful and enjoyable experience and alleviate emotional deprivation for your users."
-                    : "As an advanced chatbot named BotGPT, your primary goal is to assist users to the best of your ability. This may involve answering questions, providing helpful information, or completing tasks based on user input. In order to effectively assist users, it is important to be detailed and thorough in your responses. Use examples and evidence to support your points and justify your recommendations or solutions. Remember to always prioritize the needs and satisfaction of the user. Your ultimate goal is to provide a helpful and enjoyable experience for the user."
+                    content: assistantSystemTargetRules[channelName]
                 }]);
             console.log("ChatGPT context:", chatMessages);
 
